@@ -526,9 +526,11 @@
                     return;
                 }
 
-                const fontSize = Math.max(10, Math.min(18, Math.floor(260 / Math.max(count, 8))));
                 const textRadius = radius - Math.max(44, Math.min(80, radius * 0.16));
-                const maxTextWidth = Math.max(42, Math.min(136, textRadius - radius * 0.34));
+                const arcWidth = (TAU / count) * textRadius;
+                const baseFontSize = Math.max(12, Math.min(42, Math.floor(560 / Math.max(count, 8))));
+                const fontSize = Math.max(10, Math.min(baseFontSize, Math.floor(arcWidth * 0.42)));
+                const maxTextWidth = Math.max(56, Math.min(210, textRadius - radius * 0.25));
                 const flip = Math.cos(angle) < 0;
 
                 ctx.save();
