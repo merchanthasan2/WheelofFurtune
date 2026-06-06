@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPN Catalyst Spin Wheel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <svg class="icon-sprite" aria-hidden="true">
+        <symbol id="icon-volume" viewBox="0 0 24 24">
+            <path d="M4 10v4h4l5 4V6l-5 4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="icon-muted" viewBox="0 0 24 24">
+            <path d="M4 10v4h4l5 4V6l-5 4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M18 9l4 6M22 9l-4 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="icon-maximize" viewBox="0 0 24 24">
+            <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-minimize" viewBox="0 0 24 24">
+            <path d="M8 3v5H3M16 3v5h5M8 21v-5H3M16 21v-5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-shuffle" viewBox="0 0 24 24">
+            <path d="M16 3h5v5M4 17h2.2c2 0 3.2-.9 4.5-3.2l2.7-4.6C14.7 6.9 16 6 18 6h3M16 21h5v-5M4 7h2.2c1.4 0 2.4.5 3.3 1.7M13.9 15.4C15.1 17.2 16.3 18 18 18h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-reset" viewBox="0 0 24 24">
+            <path d="M3 12a9 9 0 1 0 3-6.7L3 8.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 4v4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-trash" viewBox="0 0 24 24">
+            <path d="M4 7h16M9 7V5h6v2M7 7l1 14h8l1-14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-download" viewBox="0 0 24 24">
+            <path d="M12 3v12M7 10l5 5 5-5M5 21h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-upload" viewBox="0 0 24 24">
+            <path d="M12 15V3M7 8l5-5 5 5M5 21h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-undo" viewBox="0 0 24 24">
+            <path d="M9 7H4v5M4 7l6.2 6.2A6 6 0 1 0 14.5 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-trophy" viewBox="0 0 24 24">
+            <path d="M8 4h8v4a4 4 0 0 1-8 0V4zM8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 12v5M8 21h8M10 17h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+        <symbol id="icon-play" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
+        </symbol>
+        <symbol id="icon-x" viewBox="0 0 24 24">
+            <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="icon-users" viewBox="0 0 24 24">
+            <path d="M16 20v-1.5c0-2-1.8-3.5-4-3.5H7c-2.2 0-4 1.5-4 3.5V20M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M20.5 20v-1.3c0-1.5-1-2.8-2.5-3.3M16.5 4.3a3.2 3.2 0 0 1 0 6.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </symbol>
+    </svg>
+
+    <svg class="stage-ribbons" viewBox="0 0 1600 950" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+            <linearGradient id="ribbonA" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stop-color="#1fa7dd" stop-opacity="0.15"/>
+                <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.32"/>
+                <stop offset="1" stop-color="#f9ad19" stop-opacity="0.2"/>
+            </linearGradient>
+            <linearGradient id="ribbonB" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stop-color="#56d790" stop-opacity="0.12"/>
+                <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.18"/>
+                <stop offset="1" stop-color="#dc4d91" stop-opacity="0.18"/>
+            </linearGradient>
+        </defs>
+        <path d="M-120 500 C 180 250, 360 700, 660 430 S 1060 150, 1720 330" fill="none" stroke="url(#ribbonA)" stroke-width="52"/>
+        <path d="M-90 610 C 220 410, 450 810, 760 560 S 1120 250, 1720 455" fill="none" stroke="url(#ribbonB)" stroke-width="22"/>
+        <path d="M-100 720 C 290 590, 510 870, 860 665 S 1210 420, 1710 640" fill="none" stroke="#ffffff" stroke-opacity="0.09" stroke-width="4"/>
+    </svg>
+
+    <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="brand">
+                <img class="brand-mark" src="assets/ipn-logo.png" alt="IPN">
+                <div class="brand-copy">
+                    <span class="brand-kicker">Catalyst Summit</span>
+                    <h1>IPN Spin Wheel</h1>
+                    <p>Premium winner picker for the summit stage</p>
+                </div>
+            </div>
+            <div class="topbar-actions" aria-label="Global controls">
+                <button class="btn" type="button" id="soundToggleBtn" title="Toggle sound" aria-pressed="true">
+                    <svg aria-hidden="true"><use id="soundIconUse" href="#icon-volume"></use></svg>
+                    <span id="soundToggleLabel">Sound on</span>
+                </button>
+                <button class="btn" type="button" id="fullscreenToggleBtn" title="Toggle full screen" aria-pressed="false">
+                    <svg aria-hidden="true"><use id="fullscreenIconUse" href="#icon-maximize"></use></svg>
+                    <span id="fullscreenToggleLabel">Full screen</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="layout">
+            <aside class="panel" aria-label="Wheel controls">
+                <section class="entry-editor">
+                    <div class="section-head">
+                        <div>
+                            <span class="eyebrow">Entries</span>
+                            <h2>Spin list</h2>
+                        </div>
+                        <div class="metric" aria-live="polite">
+                            <strong id="entryCount">0</strong>
+                            <span>Loaded</span>
+                        </div>
+                    </div>
+                    <textarea id="namesInput" spellcheck="false" autocomplete="off" placeholder="One entry per line"></textarea>
+                    <div class="status-line" id="entryStatus" role="status">Ready.</div>
+                    <div class="toolbar" aria-label="Entry actions">
+                        <button class="icon-btn" type="button" id="shuffleBtn" title="Shuffle list" aria-label="Shuffle list">
+                            <svg aria-hidden="true"><use href="#icon-shuffle"></use></svg>
+                        </button>
+                        <button class="icon-btn" type="button" id="resetBtn" title="Reset default entries" aria-label="Reset default entries">
+                            <svg aria-hidden="true"><use href="#icon-reset"></use></svg>
+                        </button>
+                        <button class="icon-btn btn-danger" type="button" id="clearListBtn" title="Clear entries" aria-label="Clear entries">
+                            <svg aria-hidden="true"><use href="#icon-trash"></use></svg>
+                        </button>
+                        <button class="icon-btn" type="button" id="importBtn" title="Import text file" aria-label="Import text file">
+                            <svg aria-hidden="true"><use href="#icon-upload"></use></svg>
+                        </button>
+                        <button class="icon-btn" type="button" id="exportBtn" title="Export entries" aria-label="Export entries">
+                            <svg aria-hidden="true"><use href="#icon-download"></use></svg>
+                        </button>
+                        <input class="sr-only" type="file" id="importFile" accept=".txt,.csv,text/plain">
+                    </div>
+                </section>
+
+                <div class="divider"></div>
+
+                <section>
+                    <div class="section-head">
+                        <div>
+                            <span class="eyebrow">Palette</span>
+                            <h3>Wheel theme</h3>
+                        </div>
+                    </div>
+                    <div class="theme-grid" id="themeGrid" role="listbox" aria-label="Wheel theme"></div>
+                </section>
+
+                <label class="toggle-row" for="removeWinnerCheck">
+                    <input type="checkbox" id="removeWinnerCheck">
+                    <span>Remove winner automatically</span>
+                </label>
+
+                <div class="divider"></div>
+
+                <section class="history">
+                    <div class="section-head">
+                        <div>
+                            <span class="eyebrow">History</span>
+                            <h3>Recent winners</h3>
+                        </div>
+                        <div class="history-actions">
+                            <button class="icon-btn" type="button" id="undoRemoveBtn" title="Undo last removal" aria-label="Undo last removal" disabled>
+                                <svg aria-hidden="true"><use href="#icon-undo"></use></svg>
+                            </button>
+                            <button class="icon-btn btn-danger" type="button" id="clearHistoryBtn" title="Clear winner history" aria-label="Clear winner history">
+                                <svg aria-hidden="true"><use href="#icon-trash"></use></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="history-list" id="winnerLog" aria-live="polite"></div>
+                </section>
+            </aside>
+
+            <section class="stage-panel" aria-label="Spin wheel stage">
+                <div class="wheel-zone" id="wheelSection">
+                    <img class="stage-emblem" src="assets/catalyst-summit-icon.png" alt="" aria-hidden="true">
+                    <div class="stage-head">
+                        <div class="live-status" id="liveStatus">
+                            <span class="live-dot" aria-hidden="true"></span>
+                            <span id="liveStatusText">Ready to spin</span>
+                        </div>
+                        <button class="btn pseudo-close" type="button" id="closePseudoFsBtn">
+                            <svg aria-hidden="true"><use href="#icon-minimize"></use></svg>
+                            <span>Exit full screen</span>
+                        </button>
+                    </div>
+
+                    <div class="wheel-wrap">
+                        <div class="wheel-rig">
+                            <div class="pointer" aria-hidden="true">
+                                <svg viewBox="0 0 72 82">
+                                    <path d="M36 81 8 17c-2-5 1-10 7-10h42c6 0 9 5 7 10L36 81z" fill="#f9ad19"/>
+                                    <path d="M36 66 16 17h40L36 66z" fill="#ffcf5a"/>
+                                    <path d="M24 14h24" stroke="#fff5cf" stroke-width="5" stroke-linecap="round" opacity="0.72"/>
+                                </svg>
+                            </div>
+                            <div class="wheel-bezel">
+                                <canvas id="wheelCanvas" width="600" height="600" aria-label="Interactive spin wheel"></canvas>
+                                <button class="center-spin" type="button" id="spinBtn" aria-label="Spin the wheel">
+                                    <span class="spin-label">
+                                        <svg aria-hidden="true"><use href="#icon-play"></use></svg>
+                                        <span>Spin</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stage-footer">
+                        <div class="result-strip" aria-live="polite">
+                            <span>Latest result</span>
+                            <strong id="latestWinner">No winner yet</strong>
+                        </div>
+                        <div class="button-row">
+                            <button class="btn" type="button" id="spinAgainBtn">
+                                <svg aria-hidden="true"><use href="#icon-reset"></use></svg>
+                                <span>Spin again</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer-bar">
+            <span>Static site ready for Netlify</span>
+            <span id="storageStatus">Saved locally</span>
+        </footer>
+    </div>
+
+    <div class="modal" id="winnerModal" role="dialog" aria-modal="true" aria-labelledby="winnerDialogTitle">
+        <div class="modal-card">
+            <div class="modal-content">
+                <div class="winner-medal" aria-hidden="true">
+                    <svg><use href="#icon-trophy"></use></svg>
+                </div>
+                <div>
+                    <p class="modal-title" id="winnerDialogTitle">Winner selected</p>
+                    <h2 class="winner-name" id="winnerNameDisplay">Winner</h2>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn" type="button" id="modalCloseBtn">
+                        <svg aria-hidden="true"><use href="#icon-x"></use></svg>
+                        <span>Close</span>
+                    </button>
+                    <button class="btn btn-danger" type="button" id="modalRemoveBtn">
+                        <svg aria-hidden="true"><use href="#icon-trash"></use></svg>
+                        <span>Remove</span>
+                    </button>
+                    <button class="btn btn-primary" type="button" id="modalSpinAgainBtn">
+                        <svg aria-hidden="true"><use href="#icon-play"></use></svg>
+                        <span>Spin again</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
