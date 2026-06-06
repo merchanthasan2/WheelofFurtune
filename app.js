@@ -4,6 +4,7 @@
             const STORAGE_KEY = "ipn-catalyst-spin-wheel:v1";
             const TAU = Math.PI * 2;
             const POINTER_ANGLE = -Math.PI / 2;
+            const MAX_WINNER_HISTORY = 100;
             const DEFAULT_NAMES = [
                 "Sarah Jenkins",
                 "Michael Chang",
@@ -189,13 +190,11 @@
                     if (typeof saved.autoRemove === "boolean") {
                         state.autoRemove = saved.autoRemove;
                     }
-                    if (Array.isArray(saved.winnerLog)) {
-                        state.winnerLog = saved.winnerLog
-                            .filter((item) => item && typeof item.name === "string")
-                            .slice(0, 18);
-                    }
                     if (typeof saved.latestWinner === "string") {
                         state.latestWinner = saved.latestWinner;
+                    }
+                    if (Array.isArray(saved.winnerLog)) {
+                        state.winnerLog = normalizeSavedWinnerLog(saved.winnerLog, state.latestWinner);
                     }
                 } catch (error) {
                     console.warn("Could not restore saved spin wheel state.", error);
@@ -209,7 +208,7 @@
                         theme: state.theme,
                         soundEnabled: state.soundEnabled,
                         autoRemove: state.autoRemove,
-                        winnerLog: state.winnerLog.slice(0, 18),
+                        winnerLog: state.winnerLog.slice(0, MAX_WINNER_HISTORY),
                         latestWinner: state.latestWinner
                     }));
                     elements.storageStatus.textContent = "Saved locally";
@@ -608,8 +607,8 @@
                 state.activeWinnerIndex = winnerIndex;
                 state.activeWinnerName = winner;
                 state.latestWinner = winner;
-                state.winnerLog.unshift({ name: winner, at: new Date().toISOString() });
-                state.winnerLog = state.winnerLog.slice(0, 18);
+                state.winnerLog.push({ name: winner, at: new Date().toISOString() });
+                state.winnerLog = state.winnerLog.slice(0, MAX_WINNER_HISTORY);
                 persist();
                 renderHistory();
                 elements.latestWinner.textContent = winner;
@@ -1034,6 +1033,18 @@
                     .map((name) => String(name).replace(/\s+/g, " ").trim())
                     .filter(Boolean)
                     .slice(0, 240);
+            }
+
+            function normalizeSavedWinnerLog(list, latestWinner) {
+                const cleaned = list
+                    .filter((item) => item && typeof item.name === "string")
+                    .slice(0, MAX_WINNER_HISTORY);
+
+                if (cleaned.length > 1 && latestWinner && cleaned[0].name === latestWinner) {
+                    return cleaned.reverse();
+                }
+
+                return cleaned;
             }
 
             function countDuplicates(list) {
