@@ -503,9 +503,9 @@
                     return;
                 }
 
-                const name = truncateLabel(rawName, count);
                 const fontSize = Math.max(10, Math.min(18, Math.floor(260 / Math.max(count, 8))));
                 const textRadius = radius - Math.max(44, Math.min(80, radius * 0.16));
+                const maxTextWidth = Math.max(42, Math.min(136, textRadius - radius * 0.34));
                 const flip = Math.cos(angle) < 0;
 
                 ctx.save();
@@ -518,10 +518,12 @@
                 }
                 ctx.textBaseline = "middle";
                 ctx.font = "900 " + fontSize + "px Arial, sans-serif";
+                const label = fitWheelLabel(ctx, getWheelFirstName(rawName), fontSize, maxTextWidth);
+                ctx.font = "900 " + label.fontSize + "px Arial, sans-serif";
                 ctx.fillStyle = isLightColor(color) ? "#06101d" : "#ffffff";
                 ctx.shadowColor = isLightColor(color) ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.3)";
                 ctx.shadowBlur = 2;
-                ctx.fillText(name, flip ? -textRadius : textRadius, 0);
+                ctx.fillText(label.text, flip ? -textRadius : textRadius, 0, maxTextWidth);
                 ctx.restore();
             }
 
@@ -1175,12 +1177,35 @@
                 return duplicates;
             }
 
-            function truncateLabel(name, count) {
-                const limit = count > 36 ? 7 : count > 18 ? 11 : 20;
-                if (name.length <= limit) {
-                    return name;
+            function getWheelFirstName(name) {
+                const clean = String(name || "").replace(/\s+/g, " ").trim();
+                if (!clean) {
+                    return "";
                 }
-                return name.slice(0, Math.max(3, limit - 3)).trim() + "...";
+                return clean.split(" ")[0].replace(/[,:;]+$/, "") || clean;
+            }
+
+            function fitWheelLabel(ctx, label, fontSize, maxWidth) {
+                let fittedFontSize = fontSize;
+                while (fittedFontSize > 8 && ctx.measureText(label).width > maxWidth) {
+                    fittedFontSize -= 1;
+                    ctx.font = "900 " + fittedFontSize + "px Arial, sans-serif";
+                }
+
+                if (ctx.measureText(label).width <= maxWidth) {
+                    return { text: label, fontSize: fittedFontSize };
+                }
+
+                const ellipsis = "...";
+                let fitted = label;
+                while (fitted.length > 1 && ctx.measureText(fitted + ellipsis).width > maxWidth) {
+                    fitted = fitted.slice(0, -1).trimEnd();
+                }
+
+                return {
+                    text: fitted.length > 1 ? fitted + ellipsis : label.charAt(0),
+                    fontSize: fittedFontSize
+                };
             }
 
             function isLightColor(hex) {
