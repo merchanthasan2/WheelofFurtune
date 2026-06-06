@@ -638,6 +638,30 @@
             min-height: 58px;
         }
 
+        .stage-actions {
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stage-sound-btn,
+        .stage-exit-btn {
+            min-height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(14px);
+        }
+
+        .stage-exit-btn {
+            width: 40px;
+            opacity: 0.82;
+        }
+
+        .stage-exit-btn:hover {
+            opacity: 1;
+        }
+
         .live-status {
             display: inline-flex;
             align-items: center;
@@ -1150,12 +1174,9 @@
             display: block;
         }
 
-        .pseudo-close {
-            display: none;
-        }
-
-        .wheel-zone.is-pseudo-fullscreen .pseudo-close {
-            display: inline-flex;
+        .wheel-zone:fullscreen .stage-actions,
+        .wheel-zone.is-pseudo-fullscreen .stage-actions {
+            display: flex;
         }
 
         @media (prefers-reduced-motion: reduce) {

@@ -178,10 +178,15 @@
                             <span class="live-dot" aria-hidden="true"></span>
                             <span id="liveStatusText">Ready to spin</span>
                         </div>
-                        <button class="btn pseudo-close" type="button" id="closePseudoFsBtn">
-                            <svg aria-hidden="true"><use href="#icon-minimize"></use></svg>
-                            <span>Exit full screen</span>
-                        </button>
+                        <div class="stage-actions" aria-label="Fullscreen controls">
+                            <button class="btn stage-sound-btn" type="button" id="stageSoundToggleBtn" title="Toggle sound" aria-pressed="true">
+                                <svg aria-hidden="true"><use id="stageSoundIconUse" href="#icon-volume"></use></svg>
+                                <span id="stageSoundToggleLabel">Sound on</span>
+                            </button>
+                            <button class="icon-btn stage-exit-btn" type="button" id="stageExitFullscreenBtn" title="Exit full screen" aria-label="Exit full screen">
+                                <svg aria-hidden="true"><use href="#icon-minimize"></use></svg>
+                            </button>
+                        </div>
                     </div>
 
                     <aside class="fullscreen-winners" aria-label="Fullscreen selected participants">

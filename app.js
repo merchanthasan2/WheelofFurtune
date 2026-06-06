@@ -94,7 +94,10 @@
                 fullscreenToggleBtn: document.getElementById("fullscreenToggleBtn"),
                 fullscreenToggleLabel: document.getElementById("fullscreenToggleLabel"),
                 fullscreenIconUse: document.getElementById("fullscreenIconUse"),
-                closePseudoFsBtn: document.getElementById("closePseudoFsBtn"),
+                stageSoundToggleBtn: document.getElementById("stageSoundToggleBtn"),
+                stageSoundToggleLabel: document.getElementById("stageSoundToggleLabel"),
+                stageSoundIconUse: document.getElementById("stageSoundIconUse"),
+                stageExitFullscreenBtn: document.getElementById("stageExitFullscreenBtn"),
                 storageStatus: document.getElementById("storageStatus"),
                 winnerModal: document.getElementById("winnerModal"),
                 winnerNameDisplay: document.getElementById("winnerNameDisplay"),
@@ -153,18 +156,11 @@
                     persist();
                 });
 
-                elements.soundToggleBtn.addEventListener("click", () => {
-                    state.soundEnabled = !state.soundEnabled;
-                    if (state.soundEnabled) {
-                        ensureAudio();
-                        playTone(520, 0.05, "triangle", 0.07);
-                    }
-                    persist();
-                    renderSoundState();
-                });
+                elements.soundToggleBtn.addEventListener("click", toggleSound);
+                elements.stageSoundToggleBtn.addEventListener("click", toggleSound);
 
                 elements.fullscreenToggleBtn.addEventListener("click", toggleFullscreen);
-                elements.closePseudoFsBtn.addEventListener("click", disablePseudoFullscreen);
+                elements.stageExitFullscreenBtn.addEventListener("click", exitFullscreenMode);
                 document.addEventListener("fullscreenchange", handleFullscreenChange);
                 window.addEventListener("resize", resizeCanvases);
 
@@ -338,6 +334,19 @@
                 elements.soundToggleBtn.setAttribute("aria-pressed", state.soundEnabled ? "true" : "false");
                 elements.soundToggleLabel.textContent = state.soundEnabled ? "Sound on" : "Muted";
                 elements.soundIconUse.setAttribute("href", state.soundEnabled ? "#icon-volume" : "#icon-muted");
+                elements.stageSoundToggleBtn.setAttribute("aria-pressed", state.soundEnabled ? "true" : "false");
+                elements.stageSoundToggleLabel.textContent = state.soundEnabled ? "Sound on" : "Muted";
+                elements.stageSoundIconUse.setAttribute("href", state.soundEnabled ? "#icon-volume" : "#icon-muted");
+            }
+
+            function toggleSound() {
+                state.soundEnabled = !state.soundEnabled;
+                if (state.soundEnabled) {
+                    ensureAudio();
+                    playTone(520, 0.05, "triangle", 0.07);
+                }
+                persist();
+                renderSoundState();
             }
 
             function renderSpinSpeed() {
@@ -814,11 +823,7 @@
 
             function toggleFullscreen() {
                 if (document.fullscreenElement || state.pseudoFullscreen) {
-                    if (document.fullscreenElement) {
-                        document.exitFullscreen().catch(disablePseudoFullscreen);
-                    } else {
-                        disablePseudoFullscreen();
-                    }
+                    exitFullscreenMode();
                     return;
                 }
 
@@ -846,6 +851,16 @@
                 window.setTimeout(resizeCanvases, 60);
             }
 
+            function exitFullscreenMode() {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen().catch(disablePseudoFullscreen);
+                    return;
+                }
+                if (state.pseudoFullscreen) {
+                    disablePseudoFullscreen();
+                }
+            }
+
             function handleFullscreenChange() {
                 const active = Boolean(document.fullscreenElement) || state.pseudoFullscreen;
                 if (document.fullscreenElement) {
@@ -856,6 +871,7 @@
                 elements.fullscreenToggleBtn.setAttribute("aria-pressed", active ? "true" : "false");
                 elements.fullscreenToggleLabel.textContent = active ? "Exit full screen" : "Full screen";
                 elements.fullscreenIconUse.setAttribute("href", active ? "#icon-minimize" : "#icon-maximize");
+                elements.stageExitFullscreenBtn.hidden = !active;
                 window.setTimeout(resizeCanvases, 80);
             }
 
