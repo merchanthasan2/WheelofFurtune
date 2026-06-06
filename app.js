@@ -2,6 +2,7 @@
             "use strict";
 
             const STORAGE_KEY = "ipn-catalyst-spin-wheel:v1";
+            const STORAGE_ENTRIES_KEY = "ipn-catalyst-spin-wheel:entries:v1";
             const TAU = Math.PI * 2;
             const POINTER_ANGLE = -Math.PI / 2;
             const MAX_WINNER_HISTORY = 100;
@@ -163,6 +164,7 @@
                 elements.stageExitFullscreenBtn.addEventListener("click", exitFullscreenMode);
                 document.addEventListener("fullscreenchange", handleFullscreenChange);
                 window.addEventListener("resize", resizeCanvases);
+                window.addEventListener("pagehide", persist);
 
                 elements.modalCloseBtn.addEventListener("click", () => closeWinnerModal(false, false));
                 elements.modalRemoveBtn.addEventListener("click", () => closeWinnerModal(true, false));
@@ -182,38 +184,45 @@
             function restoreState() {
                 try {
                     const raw = localStorage.getItem(STORAGE_KEY);
-                    if (!raw) {
-                        return;
+                    if (raw) {
+                        const saved = JSON.parse(raw);
+                        if (Array.isArray(saved.names)) {
+                            state.names = cleanNames(saved.names);
+                        }
+                        if (THEMES[saved.theme]) {
+                            state.theme = saved.theme;
+                        }
+                        if (typeof saved.soundEnabled === "boolean") {
+                            state.soundEnabled = saved.soundEnabled;
+                        }
+                        if (typeof saved.autoRemove === "boolean") {
+                            state.autoRemove = saved.autoRemove;
+                        }
+                        if (Number.isFinite(saved.spinSpeed)) {
+                            state.spinSpeed = clamp(Math.round(saved.spinSpeed), 1, 5);
+                        }
+                        if (typeof saved.latestWinner === "string") {
+                            state.latestWinner = saved.latestWinner;
+                        }
+                        if (Array.isArray(saved.winnerLog)) {
+                            state.winnerLog = normalizeSavedWinnerLog(saved.winnerLog, state.latestWinner);
+                        }
                     }
-                    const saved = JSON.parse(raw);
-                    if (Array.isArray(saved.names)) {
-                        state.names = cleanNames(saved.names);
+
+                    const savedEntries = localStorage.getItem(STORAGE_ENTRIES_KEY);
+                    if (savedEntries !== null) {
+                        state.names = parseNames(savedEntries);
                     }
-                    if (THEMES[saved.theme]) {
-                        state.theme = saved.theme;
-                    }
-                    if (typeof saved.soundEnabled === "boolean") {
-                        state.soundEnabled = saved.soundEnabled;
-                    }
-                    if (typeof saved.autoRemove === "boolean") {
-                        state.autoRemove = saved.autoRemove;
-                    }
-                    if (Number.isFinite(saved.spinSpeed)) {
-                        state.spinSpeed = clamp(Math.round(saved.spinSpeed), 1, 5);
-                    }
-                    if (typeof saved.latestWinner === "string") {
-                        state.latestWinner = saved.latestWinner;
-                    }
-                    if (Array.isArray(saved.winnerLog)) {
-                        state.winnerLog = normalizeSavedWinnerLog(saved.winnerLog, state.latestWinner);
-                    }
+                    setStorageStatus("Loaded saved names");
                 } catch (error) {
+                    setStorageStatus("Local save unavailable");
                     console.warn("Could not restore saved spin wheel state.", error);
                 }
             }
 
             function persist() {
                 try {
+                    localStorage.setItem(STORAGE_ENTRIES_KEY, state.names.join("\n"));
                     localStorage.setItem(STORAGE_KEY, JSON.stringify({
                         names: state.names,
                         theme: state.theme,
@@ -223,11 +232,15 @@
                         winnerLog: state.winnerLog.slice(0, MAX_WINNER_HISTORY),
                         latestWinner: state.latestWinner
                     }));
-                    elements.storageStatus.textContent = "Saved locally";
+                    setStorageStatus("Saved " + state.names.length + " name" + (state.names.length === 1 ? "" : "s") + " locally");
                 } catch (error) {
-                    elements.storageStatus.textContent = "Local save unavailable";
+                    setStorageStatus("Local save unavailable");
                     console.warn("Could not save spin wheel state.", error);
                 }
+            }
+
+            function setStorageStatus(message) {
+                elements.storageStatus.textContent = message;
             }
 
             function buildThemeButtons() {
