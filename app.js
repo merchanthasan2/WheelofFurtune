@@ -59,6 +59,7 @@
             let lastTickSegment = -1;
             let lastFocusedElement = null;
             let overlayHome = null;
+            let pseudoFullscreenHome = null;
             let currentSpinProgress = 0;
             let spinAudio = null;
 
@@ -831,6 +832,7 @@
 
             function enablePseudoFullscreen() {
                 state.pseudoFullscreen = true;
+                moveStageIntoPseudoFullscreen();
                 elements.wheelSection.classList.add("is-pseudo-fullscreen");
                 handleFullscreenChange();
                 window.setTimeout(resizeCanvases, 60);
@@ -839,6 +841,7 @@
             function disablePseudoFullscreen() {
                 state.pseudoFullscreen = false;
                 elements.wheelSection.classList.remove("is-pseudo-fullscreen");
+                restoreStageFromPseudoFullscreen();
                 handleFullscreenChange();
                 window.setTimeout(resizeCanvases, 60);
             }
@@ -867,6 +870,26 @@
                     return;
                 }
                 overlayHome.append(elements.confettiCanvas, elements.winnerModal);
+            }
+
+            function moveStageIntoPseudoFullscreen() {
+                if (pseudoFullscreenHome) {
+                    return;
+                }
+                pseudoFullscreenHome = {
+                    parent: elements.wheelSection.parentElement,
+                    next: elements.wheelSection.nextSibling
+                };
+                document.body.appendChild(elements.wheelSection);
+            }
+
+            function restoreStageFromPseudoFullscreen() {
+                if (!pseudoFullscreenHome || !pseudoFullscreenHome.parent) {
+                    pseudoFullscreenHome = null;
+                    return;
+                }
+                pseudoFullscreenHome.parent.insertBefore(elements.wheelSection, pseudoFullscreenHome.next);
+                pseudoFullscreenHome = null;
             }
 
             function handleKeydown(event) {
@@ -1222,11 +1245,11 @@
 
             function getSpinProfile() {
                 const profiles = {
-                    1: { duration: [4300, 5600], rotations: [3.5, 4.5] },
-                    2: { duration: [6200, 7600], rotations: [4, 5.25] },
-                    3: { duration: [8200, 10200], rotations: [4.25, 6.25] },
-                    4: { duration: [10800, 12800], rotations: [5, 7] },
-                    5: { duration: [13500, 15800], rotations: [5.5, 7.5] }
+                    1: { duration: [27000, 31500], rotations: [3.25, 4.25] },
+                    2: { duration: [34000, 39500], rotations: [3.75, 4.75] },
+                    3: { duration: [42000, 48500], rotations: [4.25, 5.5] },
+                    4: { duration: [52000, 61000], rotations: [4.75, 6.25] },
+                    5: { duration: [65000, 76000], rotations: [5.25, 7] }
                 };
                 return profiles[state.spinSpeed] || profiles[3];
             }
