@@ -149,6 +149,21 @@
                     <div class="theme-grid" id="themeGrid" role="listbox" aria-label="Wheel theme"></div>
                 </section>
 
+                <section class="speed-control" aria-labelledby="spinSpeedTitle">
+                    <div class="section-head">
+                        <div>
+                            <span class="eyebrow">Pacing</span>
+                            <h3 id="spinSpeedTitle">Spin speed</h3>
+                        </div>
+                        <strong id="spinSpeedLabel">Balanced</strong>
+                    </div>
+                    <div class="range-row">
+                        <span>Fast</span>
+                        <input type="range" id="spinSpeedRange" min="1" max="5" step="1" value="3" aria-labelledby="spinSpeedTitle">
+                        <span>Slow</span>
+                    </div>
+                </section>
+
                 <label class="toggle-row" for="removeWinnerCheck">
                     <input type="checkbox" id="removeWinnerCheck">
                     <span>Remove winner automatically</span>

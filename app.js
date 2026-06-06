@@ -40,6 +40,7 @@
                 theme: "catalyst",
                 soundEnabled: true,
                 autoRemove: false,
+                spinSpeed: 3,
                 winnerLog: [],
                 removedStack: [],
                 currentRotation: 0,
@@ -65,6 +66,8 @@
                 entryStatus: document.getElementById("entryStatus"),
                 themeGrid: document.getElementById("themeGrid"),
                 removeWinnerCheck: document.getElementById("removeWinnerCheck"),
+                spinSpeedRange: document.getElementById("spinSpeedRange"),
+                spinSpeedLabel: document.getElementById("spinSpeedLabel"),
                 shuffleBtn: document.getElementById("shuffleBtn"),
                 resetBtn: document.getElementById("resetBtn"),
                 clearListBtn: document.getElementById("clearListBtn"),
@@ -141,6 +144,12 @@
                     persist();
                 });
 
+                elements.spinSpeedRange.addEventListener("input", () => {
+                    state.spinSpeed = Number(elements.spinSpeedRange.value);
+                    renderSpinSpeed();
+                    persist();
+                });
+
                 elements.soundToggleBtn.addEventListener("click", () => {
                     state.soundEnabled = !state.soundEnabled;
                     if (state.soundEnabled) {
@@ -190,6 +199,9 @@
                     if (typeof saved.autoRemove === "boolean") {
                         state.autoRemove = saved.autoRemove;
                     }
+                    if (Number.isFinite(saved.spinSpeed)) {
+                        state.spinSpeed = clamp(Math.round(saved.spinSpeed), 1, 5);
+                    }
                     if (typeof saved.latestWinner === "string") {
                         state.latestWinner = saved.latestWinner;
                     }
@@ -208,6 +220,7 @@
                         theme: state.theme,
                         soundEnabled: state.soundEnabled,
                         autoRemove: state.autoRemove,
+                        spinSpeed: state.spinSpeed,
                         winnerLog: state.winnerLog.slice(0, MAX_WINNER_HISTORY),
                         latestWinner: state.latestWinner
                     }));
@@ -254,9 +267,11 @@
             function renderAll() {
                 elements.namesInput.value = state.names.join("\n");
                 elements.removeWinnerCheck.checked = state.autoRemove;
+                elements.spinSpeedRange.value = String(state.spinSpeed);
                 renderEntryMeta();
                 renderThemeState();
                 renderSoundState();
+                renderSpinSpeed();
                 renderHistory();
                 renderUndoState();
                 elements.latestWinner.textContent = state.latestWinner || "No winner yet";
@@ -320,6 +335,17 @@
                 elements.soundToggleBtn.setAttribute("aria-pressed", state.soundEnabled ? "true" : "false");
                 elements.soundToggleLabel.textContent = state.soundEnabled ? "Sound on" : "Muted";
                 elements.soundIconUse.setAttribute("href", state.soundEnabled ? "#icon-volume" : "#icon-muted");
+            }
+
+            function renderSpinSpeed() {
+                const labels = {
+                    1: "Fast",
+                    2: "Quick",
+                    3: "Balanced",
+                    4: "Slow",
+                    5: "Dramatic"
+                };
+                elements.spinSpeedLabel.textContent = labels[state.spinSpeed] || "Balanced";
             }
 
             function renderHistory() {
@@ -535,11 +561,12 @@
                 const winnerCenter = winnerIndex * arc + arc / 2;
                 const startRotation = state.currentRotation;
                 const baseTarget = POINTER_ANGLE - winnerCenter;
-                const rotations = randomRange(4.25, 6.25);
+                const spinProfile = getSpinProfile();
+                const rotations = randomRange(spinProfile.rotations[0], spinProfile.rotations[1]);
                 const minTarget = startRotation + rotations * TAU;
                 const turnsToAdd = Math.ceil((minTarget - baseTarget) / TAU);
                 const targetRotation = baseTarget + turnsToAdd * TAU;
-                const duration = reducedMotion.matches ? 1200 : randomRange(8200, 10200);
+                const duration = reducedMotion.matches ? 1200 : randomRange(spinProfile.duration[0], spinProfile.duration[1]);
                 const startTime = performance.now();
 
                 state.isSpinning = true;
@@ -1079,6 +1106,17 @@
 
             function normalizeAngle(angle) {
                 return ((angle % TAU) + TAU) % TAU;
+            }
+
+            function getSpinProfile() {
+                const profiles = {
+                    1: { duration: [4300, 5600], rotations: [3.5, 4.5] },
+                    2: { duration: [6200, 7600], rotations: [4, 5.25] },
+                    3: { duration: [8200, 10200], rotations: [4.25, 6.25] },
+                    4: { duration: [10800, 12800], rotations: [5, 7] },
+                    5: { duration: [13500, 15800], rotations: [5.5, 7.5] }
+                };
+                return profiles[state.spinSpeed] || profiles[3];
             }
 
             function easeOutSine(value) {
