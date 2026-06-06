@@ -533,13 +533,15 @@
 
         .stage-emblem {
             position: absolute;
-            right: 22px;
-            bottom: 70px;
+            right: 26px;
+            bottom: 78px;
             z-index: 0;
-            width: min(210px, 28%);
-            opacity: 0.16;
+            width: min(250px, 32%);
+            opacity: 0.42;
             pointer-events: none;
-            filter: drop-shadow(0 20px 38px rgba(0, 0, 0, 0.34));
+            filter:
+                drop-shadow(0 24px 46px rgba(0, 0, 0, 0.58))
+                drop-shadow(0 0 26px rgba(31, 167, 221, 0.24));
         }
 
         .wheel-zone::before {
