@@ -1152,7 +1152,18 @@
 
         .wheel-zone:fullscreen .wheel-rig,
         .wheel-zone.is-pseudo-fullscreen .wheel-rig {
-            --wheel-size: min(71vh, calc(100vw - 500px), 806px);
+            --wheel-size: min(80vh, calc(100vw - 520px), 900px);
+        }
+
+        .wheel-zone:fullscreen .stage-footer,
+        .wheel-zone.is-pseudo-fullscreen .stage-footer {
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+            width: min(420px, calc(100vw - 380px));
+            min-height: 0;
+            grid-template-columns: minmax(0, 1fr) auto;
+            z-index: 240;
         }
 
         .wheel-zone:fullscreen .stage-emblem,
