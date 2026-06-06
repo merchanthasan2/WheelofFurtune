@@ -56,6 +56,7 @@
             let confettiParticles = [];
             let lastTickSegment = -1;
             let lastFocusedElement = null;
+            let overlayHome = null;
 
             const elements = {
                 namesInput: document.getElementById("namesInput"),
@@ -93,6 +94,8 @@
                 modalSpinAgainBtn: document.getElementById("modalSpinAgainBtn"),
                 confettiCanvas: document.getElementById("confettiCanvas")
             };
+
+            overlayHome = elements.winnerModal.parentElement;
 
             const wheelCtx = elements.wheelCanvas.getContext("2d");
             const confettiCtx = elements.confettiCanvas.getContext("2d");
@@ -751,8 +754,12 @@
                     return;
                 }
 
+                moveOverlaysIntoFullscreen();
                 elements.wheelSection.requestFullscreen()
-                    .catch(() => enablePseudoFullscreen());
+                    .catch(() => {
+                        restoreOverlays();
+                        enablePseudoFullscreen();
+                    });
             }
 
             function enablePseudoFullscreen() {
@@ -771,10 +778,28 @@
 
             function handleFullscreenChange() {
                 const active = Boolean(document.fullscreenElement) || state.pseudoFullscreen;
+                if (document.fullscreenElement) {
+                    moveOverlaysIntoFullscreen();
+                } else if (!state.pseudoFullscreen) {
+                    restoreOverlays();
+                }
                 elements.fullscreenToggleBtn.setAttribute("aria-pressed", active ? "true" : "false");
                 elements.fullscreenToggleLabel.textContent = active ? "Exit full screen" : "Full screen";
                 elements.fullscreenIconUse.setAttribute("href", active ? "#icon-minimize" : "#icon-maximize");
                 window.setTimeout(resizeCanvases, 80);
+            }
+
+            function moveOverlaysIntoFullscreen() {
+                if (elements.winnerModal.parentElement !== elements.wheelSection) {
+                    elements.wheelSection.append(elements.confettiCanvas, elements.winnerModal);
+                }
+            }
+
+            function restoreOverlays() {
+                if (!overlayHome || elements.winnerModal.parentElement === overlayHome) {
+                    return;
+                }
+                overlayHome.append(elements.confettiCanvas, elements.winnerModal);
             }
 
             function handleKeydown(event) {
