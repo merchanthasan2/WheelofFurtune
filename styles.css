@@ -98,10 +98,10 @@
 
         .app-shell {
             position: relative;
-            width: min(1480px, calc(100% - 32px));
+            width: min(1760px, calc(100% - 32px));
             min-height: 100vh;
             margin: 0 auto;
-            padding: 18px 0 24px;
+            padding: 14px 0 18px;
         }
 
         .stage-ribbons {
@@ -126,9 +126,9 @@
             grid-template-columns: minmax(0, 1fr) auto;
             align-items: center;
             gap: 16px;
-            min-height: 72px;
-            padding: 12px 14px;
-            margin-bottom: 18px;
+            min-height: 66px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
             border: 1px solid var(--panel-line);
             border-radius: var(--radius);
             background: rgba(5, 10, 20, 0.68);
@@ -198,9 +198,10 @@
 
         .layout {
             display: grid;
-            grid-template-columns: minmax(320px, 410px) minmax(0, 1fr);
-            gap: 18px;
+            grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(250px, 320px);
+            gap: 14px;
             align-items: stretch;
+            min-height: 0;
         }
 
         .panel,
@@ -216,8 +217,14 @@
             display: flex;
             flex-direction: column;
             min-height: 0;
-            padding: 16px;
-            gap: 16px;
+            max-height: calc(100vh - 164px);
+            overflow: auto;
+            padding: 14px;
+            gap: 14px;
+        }
+
+        .history-panel {
+            overflow: hidden;
         }
 
         .section-head {
@@ -509,6 +516,7 @@
         .history {
             display: grid;
             gap: 10px;
+            min-height: 0;
         }
 
         .history-list {
@@ -523,6 +531,24 @@
             border: 1px solid rgba(169, 205, 255, 0.14);
             border-radius: var(--radius);
             background: rgba(2, 7, 14, 0.48);
+        }
+
+        .history-panel .history {
+            grid-template-rows: auto minmax(0, 1fr);
+            height: 100%;
+        }
+
+        .history-panel .history-list {
+            flex-direction: column;
+            flex-wrap: nowrap;
+            max-height: none;
+        }
+
+        .history-panel .history-chip {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            width: 100%;
+            border-radius: var(--radius);
         }
 
         .history-chip {
@@ -556,7 +582,7 @@
         }
 
         .stage-panel {
-            min-height: min(760px, calc(100vh - 150px));
+            min-height: min(720px, calc(100vh - 164px));
             overflow: hidden;
             background:
                 linear-gradient(180deg, rgba(13, 35, 61, 0.88), rgba(5, 8, 14, 0.96)),
@@ -1134,6 +1160,34 @@
             }
         }
 
+        @media (max-width: 1320px) {
+            .app-shell {
+                width: min(100% - 24px, 1180px);
+            }
+
+            .layout {
+                grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+            }
+
+            .history-panel {
+                grid-column: 1 / -1;
+                max-height: none;
+                overflow: visible;
+            }
+
+            .history-panel .history-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+                max-height: 132px;
+            }
+
+            .history-panel .history-chip {
+                display: inline-flex;
+                width: auto;
+                border-radius: 999px;
+            }
+        }
+
         @media (max-width: 1180px) {
             :root {
                 --wheel-size: min(52vw, calc(100vh - 350px), 540px);
@@ -1164,6 +1218,11 @@
 
             .layout {
                 grid-template-columns: 1fr;
+            }
+
+            .panel {
+                max-height: none;
+                overflow: visible;
             }
 
             .stage-panel {

@@ -168,26 +168,6 @@
                     <input type="checkbox" id="removeWinnerCheck">
                     <span>Remove winner automatically</span>
                 </label>
-
-                <div class="divider"></div>
-
-                <section class="history">
-                    <div class="section-head">
-                        <div>
-                            <span class="eyebrow">History</span>
-                            <h3>Recent winners</h3>
-                        </div>
-                        <div class="history-actions">
-                            <button class="icon-btn" type="button" id="undoRemoveBtn" title="Undo last removal" aria-label="Undo last removal" disabled>
-                                <svg aria-hidden="true"><use href="#icon-undo"></use></svg>
-                            </button>
-                            <button class="icon-btn btn-danger" type="button" id="clearHistoryBtn" title="Clear winner history" aria-label="Clear winner history">
-                                <svg aria-hidden="true"><use href="#icon-trash"></use></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="history-list" id="winnerLog" aria-live="polite"></div>
-                </section>
             </aside>
 
             <section class="stage-panel" aria-label="Spin wheel stage">
@@ -264,6 +244,26 @@
                     </div>
                 </div>
             </section>
+
+            <aside class="panel history-panel" aria-label="Recent winners">
+                <section class="history">
+                    <div class="section-head">
+                        <div>
+                            <span class="eyebrow">History</span>
+                            <h3>Recent winners</h3>
+                        </div>
+                        <div class="history-actions">
+                            <button class="icon-btn" type="button" id="undoRemoveBtn" title="Undo last removal" aria-label="Undo last removal" disabled>
+                                <svg aria-hidden="true"><use href="#icon-undo"></use></svg>
+                            </button>
+                            <button class="icon-btn btn-danger" type="button" id="clearHistoryBtn" title="Clear winner history" aria-label="Clear winner history">
+                                <svg aria-hidden="true"><use href="#icon-trash"></use></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="history-list" id="winnerLog" aria-live="polite"></div>
+                </section>
+            </aside>
         </main>
 
         <footer class="footer-bar">
