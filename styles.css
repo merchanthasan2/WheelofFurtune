@@ -19,7 +19,7 @@
             --shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
             --radius: 8px;
             --control-height: 42px;
-            --wheel-size: min(58vw, 620px);
+            --wheel-size: min(52vw, calc(100vh - 360px), 580px);
             font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
         }
 
@@ -556,7 +556,7 @@
         }
 
         .stage-panel {
-            min-height: 720px;
+            min-height: min(760px, calc(100vh - 150px));
             overflow: hidden;
             background:
                 linear-gradient(180deg, rgba(13, 35, 61, 0.88), rgba(5, 8, 14, 0.96)),
@@ -567,17 +567,17 @@
             position: relative;
             display: grid;
             grid-template-rows: auto minmax(0, 1fr) auto;
-            min-height: 720px;
+            min-height: min(760px, calc(100vh - 150px));
             padding: 16px;
         }
 
         .stage-emblem {
             position: absolute;
-            right: 26px;
-            bottom: 78px;
+            right: 32px;
+            bottom: 112px;
             z-index: 0;
-            width: min(250px, 32%);
-            opacity: 0.42;
+            width: min(220px, 24%);
+            opacity: 0.38;
             pointer-events: none;
             filter:
                 drop-shadow(0 24px 46px rgba(0, 0, 0, 0.58))
@@ -641,7 +641,7 @@
             place-items: center;
             align-self: center;
             min-height: 0;
-            padding: 22px 0;
+            padding: 12px 0;
         }
 
         .wheel-rig {
@@ -1085,7 +1085,7 @@
 
         .wheel-zone:fullscreen .wheel-rig,
         .wheel-zone.is-pseudo-fullscreen .wheel-rig {
-            --wheel-size: min(72vh, 720px);
+            --wheel-size: min(58vh, calc(100vw - 420px), 680px);
         }
 
         .wheel-zone:fullscreen .winner-reveal.is-open,
@@ -1119,7 +1119,7 @@
 
         @media (max-width: 1180px) {
             :root {
-                --wheel-size: min(56vw, 560px);
+                --wheel-size: min(52vw, calc(100vh - 350px), 540px);
             }
 
             .layout {
@@ -1129,7 +1129,7 @@
 
         @media (max-width: 980px) {
             :root {
-                --wheel-size: min(82vw, 560px);
+                --wheel-size: min(76vw, calc(100vh - 300px), 520px);
             }
 
             .app-shell {
@@ -1151,11 +1151,11 @@
 
             .stage-panel {
                 order: -1;
-                min-height: 640px;
+                min-height: min(680px, calc(100vh - 120px));
             }
 
             .wheel-zone {
-                min-height: 640px;
+                min-height: min(680px, calc(100vh - 120px));
             }
         }
 
@@ -1191,7 +1191,7 @@
 
             .stage-panel,
             .wheel-zone {
-                min-height: 560px;
+                min-height: min(580px, calc(100vh - 80px));
             }
 
             .wheel-rig {
@@ -1242,6 +1242,35 @@
 
             .footer-bar {
                 flex-direction: column;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 620px) {
+            :root {
+                --wheel-size: min(calc(100vw - 250px), 300px);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .wheel-zone:fullscreen .wheel-rig,
+            .wheel-zone.is-pseudo-fullscreen .wheel-rig {
+                --wheel-size: clamp(180px, min(58vw, calc(100vh - 410px)), 430px);
+            }
+
+            .fullscreen-winners {
+                left: 14px;
+                right: 14px;
+                top: auto;
+                bottom: 86px;
+                width: auto;
+                min-width: 0;
+                max-height: 150px;
+            }
+
+            .fullscreen-winner-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+                max-height: 96px;
             }
         }
 
