@@ -73,6 +73,8 @@
                 undoRemoveBtn: document.getElementById("undoRemoveBtn"),
                 clearHistoryBtn: document.getElementById("clearHistoryBtn"),
                 winnerLog: document.getElementById("winnerLog"),
+                fullscreenWinnerLog: document.getElementById("fullscreenWinnerLog"),
+                fullscreenWinnerCount: document.getElementById("fullscreenWinnerCount"),
                 wheelSection: document.getElementById("wheelSection"),
                 wheelCanvas: document.getElementById("wheelCanvas"),
                 spinBtn: document.getElementById("spinBtn"),
@@ -322,13 +324,19 @@
             }
 
             function renderHistory() {
-                elements.winnerLog.textContent = "";
+                renderHistoryList(elements.winnerLog, "No winners recorded");
+                renderHistoryList(elements.fullscreenWinnerLog, "No winners yet");
+                elements.fullscreenWinnerCount.textContent = String(state.winnerLog.length);
+                elements.clearHistoryBtn.disabled = !state.winnerLog.length;
+            }
+
+            function renderHistoryList(container, emptyText) {
+                container.textContent = "";
                 if (!state.winnerLog.length) {
                     const empty = document.createElement("div");
                     empty.className = "empty-note";
-                    empty.textContent = "No winners recorded";
-                    elements.winnerLog.appendChild(empty);
-                    elements.clearHistoryBtn.disabled = true;
+                    empty.textContent = emptyText;
+                    container.appendChild(empty);
                     return;
                 }
 
@@ -344,9 +352,8 @@
                     label.textContent = item.name;
 
                     chip.append(rank, label);
-                    elements.winnerLog.appendChild(chip);
+                    container.appendChild(chip);
                 });
-                elements.clearHistoryBtn.disabled = false;
             }
 
             function renderUndoState() {
