@@ -59,6 +59,8 @@
             let lastTickSegment = -1;
             let lastFocusedElement = null;
             let overlayHome = null;
+            let currentSpinProgress = 0;
+            let spinAudio = null;
 
             const elements = {
                 namesInput: document.getElementById("namesInput"),
@@ -571,20 +573,24 @@
 
                 state.isSpinning = true;
                 state.activeWinnerIndex = winnerIndex;
+                currentSpinProgress = 0;
                 lastTickSegment = calculateWinnerIndex();
                 elements.spinBtn.classList.add("is-busy");
                 setLiveStatus("Spinning");
                 renderEntryMeta();
                 renderUndoState();
                 stopConfetti();
+                startSpinSound();
 
                 cancelAnimationFrame(spinAnimationId);
 
                 const frame = (now) => {
                     const progress = clamp((now - startTime) / duration, 0, 1);
-                    const eased = easeOutSine(progress);
+                    currentSpinProgress = progress;
+                    const eased = easeOutQuart(progress);
                     state.currentRotation = startRotation + (targetRotation - startRotation) * eased;
                     drawWheel();
+                    updateSpinSound(progress);
                     triggerSegmentTick();
 
                     if (progress < 1) {
@@ -594,6 +600,8 @@
 
                     state.currentRotation = targetRotation;
                     state.isSpinning = false;
+                    currentSpinProgress = 1;
+                    stopSpinSound();
                     elements.spinBtn.classList.remove("is-busy");
                     renderEntryMeta();
                     renderUndoState();
@@ -611,7 +619,16 @@
                 const segment = calculateWinnerIndex();
                 if (segment !== lastTickSegment) {
                     lastTickSegment = segment;
-                    playTone(620 + (segment % 5) * 38, 0.025, "square", 0.035);
+                    const slowZone = currentSpinProgress > 0.78;
+                    const finalZone = currentSpinProgress > 0.92;
+                    const frequency = finalZone
+                        ? 220 + (segment % 3) * 24
+                        : slowZone
+                            ? 320 + (segment % 4) * 28
+                            : 620 + (segment % 5) * 38;
+                    const duration = finalZone ? 0.09 : slowZone ? 0.06 : 0.025;
+                    const volume = finalZone ? 0.055 : slowZone ? 0.045 : 0.035;
+                    playTone(frequency, duration, slowZone ? "triangle" : "square", volume);
                 }
             }
 
@@ -931,6 +948,76 @@
                 oscillator.stop(now + duration);
             }
 
+            function startSpinSound() {
+                if (!state.soundEnabled) {
+                    return;
+                }
+                const ctx = ensureAudio();
+                if (!ctx) {
+                    return;
+                }
+
+                stopSpinSound(true);
+
+                const now = ctx.currentTime;
+                const oscillator = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const filter = ctx.createBiquadFilter();
+
+                oscillator.type = "sawtooth";
+                oscillator.frequency.setValueAtTime(92, now);
+                filter.type = "lowpass";
+                filter.frequency.setValueAtTime(900, now);
+                filter.Q.setValueAtTime(0.8, now);
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(0.035, now + 0.18);
+
+                oscillator.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+                oscillator.start(now);
+
+                spinAudio = { oscillator, gain, filter };
+            }
+
+            function updateSpinSound(progress) {
+                if (!spinAudio || !state.soundEnabled || !audioCtx) {
+                    return;
+                }
+
+                const now = audioCtx.currentTime;
+                const slowFactor = 1 - easeOutQuart(progress);
+                const frequency = 24 + slowFactor * 72;
+                const filterFrequency = 260 + slowFactor * 980;
+                const volume = 0.008 + slowFactor * 0.034;
+
+                spinAudio.oscillator.frequency.setTargetAtTime(frequency, now, 0.08);
+                spinAudio.filter.frequency.setTargetAtTime(filterFrequency, now, 0.08);
+                spinAudio.gain.gain.setTargetAtTime(volume, now, 0.08);
+            }
+
+            function stopSpinSound(immediate = false) {
+                if (!spinAudio || !audioCtx) {
+                    spinAudio = null;
+                    return;
+                }
+
+                const { oscillator, gain } = spinAudio;
+                const now = audioCtx.currentTime;
+                const end = immediate ? now + 0.02 : now + 0.28;
+
+                try {
+                    gain.gain.cancelScheduledValues(now);
+                    gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), now);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, end);
+                    oscillator.stop(end + 0.03);
+                } catch (error) {
+                    console.warn("Spin sound cleanup failed.", error);
+                }
+
+                spinAudio = null;
+            }
+
             function playWinnerSound() {
                 if (!state.soundEnabled) {
                     return;
@@ -1119,8 +1206,8 @@
                 return profiles[state.spinSpeed] || profiles[3];
             }
 
-            function easeOutSine(value) {
-                return Math.sin((value * Math.PI) / 2);
+            function easeOutQuart(value) {
+                return 1 - Math.pow(1 - value, 4);
             }
 
             function clamp(value, min, max) {
