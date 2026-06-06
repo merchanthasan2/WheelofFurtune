@@ -792,6 +792,40 @@
             gap: 8px;
         }
 
+        .winner-reveal-actions .btn {
+            min-width: 128px;
+            min-height: 48px;
+            padding: 0 18px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 950;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.32);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+        }
+
+        .winner-reveal-actions .btn svg,
+        .winner-reveal-actions .btn span {
+            color: inherit;
+            opacity: 1;
+        }
+
+        .winner-reveal-actions .btn-primary {
+            color: #05101d;
+            background: linear-gradient(180deg, #fff6cf, #ffc64d);
+            border-color: rgba(255, 246, 207, 0.95);
+            text-shadow: none;
+            box-shadow:
+                0 12px 26px rgba(249, 173, 25, 0.32),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .winner-reveal-actions .btn-primary:hover {
+            color: #020812;
+            background: linear-gradient(180deg, #ffffff, #ffd66e);
+            border-color: #ffffff;
+        }
+
         .result-strip {
             min-width: 0;
             overflow: hidden;
