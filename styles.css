@@ -1131,6 +1131,15 @@
             --wheel-size: min(52vh, calc(100vw - 460px), 620px);
         }
 
+        .wheel-zone:fullscreen .stage-emblem,
+        .wheel-zone.is-pseudo-fullscreen .stage-emblem {
+            opacity: 1;
+            width: min(260px, 18vw);
+            filter:
+                drop-shadow(0 28px 54px rgba(0, 0, 0, 0.68))
+                drop-shadow(0 0 30px rgba(31, 167, 221, 0.38));
+        }
+
         .wheel-zone:fullscreen .winner-reveal.is-open,
         .wheel-zone.is-pseudo-fullscreen .winner-reveal.is-open {
             display: flex;
