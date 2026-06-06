@@ -1152,7 +1152,7 @@
 
         .wheel-zone:fullscreen .wheel-rig,
         .wheel-zone.is-pseudo-fullscreen .wheel-rig {
-            --wheel-size: min(52vh, calc(100vw - 460px), 620px);
+            --wheel-size: min(71vh, calc(100vw - 500px), 806px);
         }
 
         .wheel-zone:fullscreen .stage-emblem,
