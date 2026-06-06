@@ -536,11 +536,11 @@
                 const winnerCenter = winnerIndex * arc + arc / 2;
                 const startRotation = state.currentRotation;
                 const baseTarget = POINTER_ANGLE - winnerCenter;
-                const rotations = randomRange(6, 9);
+                const rotations = randomRange(4.25, 6.25);
                 const minTarget = startRotation + rotations * TAU;
                 const turnsToAdd = Math.ceil((minTarget - baseTarget) / TAU);
                 const targetRotation = baseTarget + turnsToAdd * TAU;
-                const duration = reducedMotion.matches ? 900 : randomRange(4700, 6200);
+                const duration = reducedMotion.matches ? 1200 : randomRange(8200, 10200);
                 const startTime = performance.now();
 
                 state.isSpinning = true;
@@ -556,7 +556,7 @@
 
                 const frame = (now) => {
                     const progress = clamp((now - startTime) / duration, 0, 1);
-                    const eased = easeOutCubic(progress);
+                    const eased = easeOutSine(progress);
                     state.currentRotation = startRotation + (targetRotation - startRotation) * eased;
                     drawWheel();
                     triggerSegmentTick();
@@ -928,6 +928,42 @@
                     oscillator.start(start);
                     oscillator.stop(start + 0.34);
                 });
+
+                const chordNotes = [261.63, 329.63, 392, 523.25];
+                chordNotes.forEach((frequency, index) => {
+                    const oscillator = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    const filter = ctx.createBiquadFilter();
+                    const start = now + 0.28 + index * 0.025;
+                    oscillator.type = "sine";
+                    oscillator.frequency.setValueAtTime(frequency, start);
+                    filter.type = "lowpass";
+                    filter.frequency.setValueAtTime(1800, start);
+                    filter.Q.setValueAtTime(1.6, start);
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(0.09, start + 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + 2.2);
+                    oscillator.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(ctx.destination);
+                    oscillator.start(start);
+                    oscillator.stop(start + 2.25);
+                });
+
+                [1567.98, 2093].forEach((frequency, index) => {
+                    const oscillator = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    const start = now + 0.62 + index * 0.12;
+                    oscillator.type = "triangle";
+                    oscillator.frequency.setValueAtTime(frequency, start);
+                    gain.gain.setValueAtTime(0.0001, start);
+                    gain.gain.exponentialRampToValueAtTime(0.045, start + 0.035);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, start + 1.35);
+                    oscillator.connect(gain);
+                    gain.connect(ctx.destination);
+                    oscillator.start(start);
+                    oscillator.stop(start + 1.4);
+                });
             }
 
             function startConfetti() {
@@ -1034,8 +1070,8 @@
                 return ((angle % TAU) + TAU) % TAU;
             }
 
-            function easeOutCubic(value) {
-                return 1 - Math.pow(1 - value, 3);
+            function easeOutSine(value) {
+                return Math.sin((value * Math.PI) / 2);
             }
 
             function clamp(value, min, max) {
