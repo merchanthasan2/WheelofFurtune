@@ -4,7 +4,9 @@ A static, Netlify-ready spin wheel for summit winner selection.
 
 ## Run locally
 
-Open `index.html` directly, or serve the folder with any static server.
+Run `npm run dev`, then open `http://127.0.0.1:3000/`.
+
+You can also open `index.html` directly, or serve the folder with any static server.
 
 ## Deploy
 

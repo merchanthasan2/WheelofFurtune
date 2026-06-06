@@ -1,3 +1,5 @@
 verification/
 .static-server.out
 .static-server.err
+.npm-dev.out
+.npm-dev.err
