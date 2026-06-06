@@ -89,6 +89,10 @@
                 storageStatus: document.getElementById("storageStatus"),
                 winnerModal: document.getElementById("winnerModal"),
                 winnerNameDisplay: document.getElementById("winnerNameDisplay"),
+                winnerReveal: document.getElementById("winnerReveal"),
+                stageWinnerName: document.getElementById("stageWinnerName"),
+                stageWinnerCloseBtn: document.getElementById("stageWinnerCloseBtn"),
+                stageWinnerSpinAgainBtn: document.getElementById("stageWinnerSpinAgainBtn"),
                 modalCloseBtn: document.getElementById("modalCloseBtn"),
                 modalRemoveBtn: document.getElementById("modalRemoveBtn"),
                 modalSpinAgainBtn: document.getElementById("modalSpinAgainBtn"),
@@ -152,6 +156,8 @@
                 elements.modalCloseBtn.addEventListener("click", () => closeWinnerModal(false, false));
                 elements.modalRemoveBtn.addEventListener("click", () => closeWinnerModal(true, false));
                 elements.modalSpinAgainBtn.addEventListener("click", () => closeWinnerModal(false, true));
+                elements.stageWinnerCloseBtn.addEventListener("click", () => closeWinnerModal(false, false));
+                elements.stageWinnerSpinAgainBtn.addEventListener("click", () => closeWinnerModal(false, true));
 
                 elements.winnerModal.addEventListener("click", (event) => {
                     if (event.target === elements.winnerModal) {
@@ -609,16 +615,25 @@
             function showWinnerModal(name) {
                 lastFocusedElement = document.activeElement;
                 elements.winnerNameDisplay.textContent = name;
+                elements.stageWinnerName.textContent = name;
+                elements.winnerReveal.classList.add("is-open");
                 elements.winnerModal.classList.add("is-open");
-                elements.modalSpinAgainBtn.focus();
+                if (document.fullscreenElement || state.pseudoFullscreen) {
+                    elements.stageWinnerSpinAgainBtn.focus();
+                } else {
+                    elements.modalSpinAgainBtn.focus();
+                }
             }
 
             function closeWinnerModal(forceRemove, spinAfterClose) {
-                if (!elements.winnerModal.classList.contains("is-open")) {
+                const modalOpen = elements.winnerModal.classList.contains("is-open");
+                const revealOpen = elements.winnerReveal.classList.contains("is-open");
+                if (!modalOpen && !revealOpen) {
                     return;
                 }
 
                 elements.winnerModal.classList.remove("is-open");
+                elements.winnerReveal.classList.remove("is-open");
                 stopConfetti();
 
                 const shouldRemove = (forceRemove || state.autoRemove) && state.activeWinnerIndex > -1;

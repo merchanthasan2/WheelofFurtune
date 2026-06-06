@@ -555,7 +555,8 @@
 
         .stage-head,
         .stage-footer,
-        .wheel-wrap {
+        .wheel-wrap,
+        .winner-reveal {
             position: relative;
             z-index: 1;
         }
@@ -739,6 +740,58 @@
             min-height: 58px;
         }
 
+        .winner-reveal {
+            position: absolute;
+            inset: 0;
+            z-index: 220;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            pointer-events: none;
+        }
+
+        .winner-reveal-card {
+            display: grid;
+            justify-items: center;
+            gap: 16px;
+            width: min(560px, calc(100% - 28px));
+            padding: 28px;
+            text-align: center;
+            border: 1px solid rgba(249, 173, 25, 0.68);
+            border-radius: var(--radius);
+            background:
+                linear-gradient(145deg, rgba(9, 37, 67, 0.98), rgba(7, 13, 24, 0.98) 54%, rgba(48, 26, 57, 0.98)),
+                #07101d;
+            box-shadow:
+                0 34px 120px rgba(0, 0, 0, 0.72),
+                0 0 0 999px rgba(2, 5, 11, 0.58);
+            pointer-events: auto;
+        }
+
+        .winner-reveal-card span {
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .winner-reveal-card strong {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            color: var(--text);
+            font-size: clamp(32px, 7vw, 68px);
+            line-height: 1.02;
+            font-weight: 950;
+        }
+
+        .winner-reveal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
         .result-strip {
             min-width: 0;
             overflow: hidden;
@@ -770,7 +823,7 @@
         .modal {
             position: fixed;
             inset: 0;
-            z-index: 70;
+            z-index: 150;
             display: none;
             align-items: center;
             justify-content: center;
@@ -898,6 +951,11 @@
         .wheel-zone:fullscreen .wheel-rig,
         .wheel-zone.is-pseudo-fullscreen .wheel-rig {
             --wheel-size: min(72vh, 720px);
+        }
+
+        .wheel-zone:fullscreen .winner-reveal.is-open,
+        .wheel-zone.is-pseudo-fullscreen .winner-reveal.is-open {
+            display: flex;
         }
 
         .pseudo-close {
